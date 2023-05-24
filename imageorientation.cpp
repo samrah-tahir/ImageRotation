@@ -12,6 +12,7 @@ ImageOrientation::ImageOrientation(QObject *parent) : QObject{parent}
     javaClass.callMethod<void>("setPointer","(J)V",(long long)(ImageOrientation*)this);
 
     setRotation(0);
+    qDebug() << "constructor"<<QThread::currentThreadId();
 }
 
 extern "C" {
@@ -21,21 +22,10 @@ JNIEXPORT void JNICALL Java_com_example_myapplication_MainActivity_setNativeRota
 
     QPointer<ImageOrientation> orientation = reinterpret_cast<ImageOrientation*>(ptr);
 
-    auto setupTimer = [](QPointer<ImageOrientation> orientation,int rotation){
-        QTimer *t = new QTimer(nullptr);
-        t->setSingleShot(true);
-
-        QObject::connect(t, &QTimer::timeout, [t, orientation, rotation](){
-            if(!orientation.isNull()){
-                orientation->setRotation(rotation);
-                t->deleteLater();
-            }
-        });
-
-        t->start(0);
-    };
-    QMetaObject::invokeMethod(orientation->thread(), [setupTimer, orientation, rotation]()  {
-        setupTimer(orientation, rotation);
+    qDebug() << QThread::currentThreadId() << "before invoke";
+    QMetaObject::invokeMethod(orientation->thread(), [orientation, rotation]()  {
+        orientation->setRotation(rotation);
+        qDebug() << QThread::currentThreadId();
     });
 
     qDebug() << rotation;

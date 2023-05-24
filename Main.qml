@@ -30,6 +30,11 @@ Window {
         height: 200
         anchors.centerIn: parent
         rotation: imgOrientation.rotation
+        Behavior on rotation {
+            NumberAnimation {
+                duration: 150;
+            }
+        }
     }
 
 }
