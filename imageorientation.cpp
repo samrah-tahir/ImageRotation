@@ -4,7 +4,6 @@
 #include <QJniObject>
 #include <QDebug>
 #include <QObject>
-#include <QQmlContext>
 
 ImageOrientation::ImageOrientation(QObject *parent) : QObject{parent}
 {
@@ -20,7 +19,12 @@ JNIEXPORT void JNICALL Java_com_example_myapplication_MainActivity_setNativeRota
 
     ImageOrientation* orientation = reinterpret_cast<ImageOrientation*>(ptr);
 
-    orientation->setRotation(rotation);
+    if(rotation == 90)
+        rotation = 270;
+    else if(rotation == 270)
+        rotation = 90;
+
+    emit orientation->rotationChanged(rotation);
     qDebug() << rotation;
 }
 
@@ -37,7 +41,7 @@ void ImageOrientation::setRotation(int newRotation)
     if (m_rotation == newRotation)
         return;
     m_rotation = newRotation;
-    emit rotationChanged();
+    emit rotationChanged(newRotation);
 }
 
 

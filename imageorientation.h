@@ -13,14 +13,15 @@ public:
     explicit ImageOrientation(QObject* parent = nullptr);
 
     int rotation() const;
+
+public slots:
     void setRotation(int newRotation);
 
 signals:
-    void rotationChanged();
+    void rotationChanged(int newRotation);
 
 private:
     int m_rotation;
 
 };
-
 #endif // IMAGEORIENTATION_H

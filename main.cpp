@@ -1,9 +1,5 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QJniObject>
-#include <iostream>
-#include <string>
-#include <QQmlContext>
 #include <imageorientation.h>
 
 int main(int argc, char *argv[])
