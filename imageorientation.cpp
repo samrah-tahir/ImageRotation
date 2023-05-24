@@ -21,11 +21,6 @@ JNIEXPORT void JNICALL Java_com_example_myapplication_MainActivity_setNativeRota
 
     QPointer<ImageOrientation> orientation = reinterpret_cast<ImageOrientation*>(ptr);
 
-    if(rotation == 90)
-        rotation = 270;
-    else if(rotation == 270)
-        rotation = 90;
-
     auto setupTimer = [](QPointer<ImageOrientation> orientation,int rotation){
         QTimer *t = new QTimer(nullptr);
         t->setSingleShot(true);
