@@ -33,7 +33,7 @@ public class MainActivity extends QtActivity {
 
         @Override
         public void onOrientationChanged(int orientation){
-            if(orientation == 90 || orientation == 0 || orientation == 270)
+//            if(orientation >= 90 || orientation >= 0 || orientation <= 270)
                 setNativeRotation(orientation, pointer);
         }
     }

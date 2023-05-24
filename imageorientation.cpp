@@ -4,14 +4,13 @@
 #include <QJniObject>
 #include <QDebug>
 #include <QObject>
+#include <QTimer>
 
 ImageOrientation::ImageOrientation(QObject *parent) : QObject{parent}
 {
     QJniObject javaClass = QNativeInterface::QAndroidApplication::context();
     javaClass.callMethod<void>("setPointer","(J)V",(long long)(ImageOrientation*)this);
 
-    connect(this, &ImageOrientation::rotationChanged, this,
-                     &ImageOrientation::setRotation, Qt::QueuedConnection);
     setRotation(0);
 }
 
@@ -20,19 +19,30 @@ extern "C" {
 JNIEXPORT void JNICALL Java_com_example_myapplication_MainActivity_setNativeRotation
     (JNIEnv *, jobject, jint rotation, jlong ptr){
 
-    ImageOrientation* orientation = reinterpret_cast<ImageOrientation*>(ptr);
+    QPointer<ImageOrientation> orientation = reinterpret_cast<ImageOrientation*>(ptr);
 
     if(rotation == 90)
         rotation = 270;
     else if(rotation == 270)
         rotation = 90;
-//    QMetaObject::invokeMethod(orientation
-//                              , "setRotation"
-//                              , Qt::AutoConnection
-//                              , Q_ARG(int, rotation));
 
-    //orientation->setRotation(rotation);
-    emit orientation->rotationChanged(rotation);
+    auto setupTimer = [](QPointer<ImageOrientation> orientation,int rotation){
+        QTimer *t = new QTimer(nullptr);
+        t->setSingleShot(true);
+
+        QObject::connect(t, &QTimer::timeout, [t, orientation, rotation](){
+            if(!orientation.isNull()){
+                orientation->setRotation(rotation);
+                t->deleteLater();
+            }
+        });
+
+        t->start(0);
+    };
+    QMetaObject::invokeMethod(orientation->thread(), [setupTimer, orientation, rotation]()  {
+        setupTimer(orientation, rotation);
+    });
+
     qDebug() << rotation;
 }
 
