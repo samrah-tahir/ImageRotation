@@ -15,7 +15,7 @@ public:
     int rotation() const;
 
 public slots:
-    void setRotation(int newRotation);
+           void setRotation(int newRotation);
 
 signals:
     void rotationChanged(int newRotation);
@@ -24,4 +24,5 @@ private:
     int m_rotation;
 
 };
+
 #endif // IMAGEORIENTATION_H

@@ -32,10 +32,4 @@ Window {
         rotation: imgOrientation.rotation
     }
 
-    Connections {
-        target: imgOrientation
-        onRotationChanged: imgOrientation.setRotation(newRotation);
-
-    }
-
 }

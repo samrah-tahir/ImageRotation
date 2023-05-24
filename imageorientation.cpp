@@ -9,6 +9,9 @@ ImageOrientation::ImageOrientation(QObject *parent) : QObject{parent}
 {
     QJniObject javaClass = QNativeInterface::QAndroidApplication::context();
     javaClass.callMethod<void>("setPointer","(J)V",(long long)(ImageOrientation*)this);
+
+    connect(this, &ImageOrientation::rotationChanged, this,
+                     &ImageOrientation::setRotation, Qt::QueuedConnection);
     setRotation(0);
 }
 
@@ -23,7 +26,12 @@ JNIEXPORT void JNICALL Java_com_example_myapplication_MainActivity_setNativeRota
         rotation = 270;
     else if(rotation == 270)
         rotation = 90;
+//    QMetaObject::invokeMethod(orientation
+//                              , "setRotation"
+//                              , Qt::AutoConnection
+//                              , Q_ARG(int, rotation));
 
+    //orientation->setRotation(rotation);
     emit orientation->rotationChanged(rotation);
     qDebug() << rotation;
 }
